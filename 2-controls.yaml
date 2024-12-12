@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+    ouId:
+        Description: The OU id from the AWS Control Tower consoe on which the controlset is to be enabled
+        Type : String
+        AllowedPattern: '^ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}$'
+        ConstraintDescription: Must be a valid ou id.
+    orgId:
+        Description: org_id retrieve from the AWS Organizations console in your account.
+        Type: String
+        AllowedPattern: '^o-[a-z0-9]{10,32}$'
+        ConstraintDescription: Must be a valid org id.
+
+Resources:      
+    Control2:
+        Type: AWS::ControlTower::EnabledControl
+        Properties:
+            ControlIdentifier: !Sub "arn:aws:controltower:${AWS::Region}::control/AWS-GR_DETECT_CLOUDTRAIL_ENABLED_ON_MEMBER_ACCOUNTS"
+            TargetIdentifier: !Sub "arn:aws:organizations::${AWS::AccountId}:ou/${orgId}/${ouId}"
+    Control4:
+        Type: AWS::ControlTower::EnabledControl
+        Properties:
+            ControlIdentifier: !Sub "arn:aws:controltower:${AWS::Region}::control/AWS-GR_RESTRICT_ROOT_USER"
+            TargetIdentifier: !Sub "arn:aws:organizations::${AWS::AccountId}:ou/${orgId}/${ouId}"
